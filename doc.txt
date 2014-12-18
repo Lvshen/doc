@@ -84,4 +84,10 @@ wget -r -p -np -k URL    下载一个站点
 
 export LD_LIBRARY_PATH=/data/opt/glibc-2.14/lib:$LD_LIBRARY_PATH 临时修改环境变量
 
+gcc g++
+yum -y update gcc
+yum -y install gcc+ gcc-c++
+
+yum install libtermcap-devel ncurses-devel libevent-devel readline-devel
+
 vpn:已换东京机房 106.185.48.226 user:vpn pass:123456 
