@@ -1,33 +1,33 @@
-mysqlԶ�̷���Ȩ�ޣ�GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
-rpm -e mysql����// ��ͨɾ��ģʽ
-rpm -e --nodeps mysql����// ǿ��ɾ��ģʽ�����ʹ����������ɾ��ʱ����ʾ�������������ļ������ø�������Զ������ǿ��ɾ��
-chkconfig mysqld on  //��������
-mysqladmin -u root password 'root'����// ͨ���������root�˺���������Ϊ root
+mysql远程访问权限：GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
+rpm -e mysql　　// 普通删除模式
+rpm -e --nodeps mysql　　// 强力删除模式，如果使用上面命令删除时，提示有依赖的其它文件，则用该命令可以对其进行强力删除
+chkconfig mysqld on  //开机启动
+mysqladmin -u root password 'root'　　// 通过该命令给root账号设置密码为 root
 
 //**********************************************************************************************************
-�� 1 �����������������
+（ 1 ）最基本分区方案：
 
-/ �������С�� 5GB ���ϡ� 
-swap �������������������С�������ڴ�� 1~2 ����
-
-
-
-�� 2 �����׷���������
-/boot ����������� Linux ϵͳ�����йصĳ��򣬱�����������װ�س���ȣ������СΪ 100MB �� 
-/ �� Linux ϵͳ�ĸ�Ŀ¼�����е�Ŀ¼���������Ŀ¼���棬�����СΪ 5GB ���ϡ� 
-/home �������ͨ�û������ݣ�����ͨ�û�������Ŀ¼�������СΪʣ�µĿռ䡣 
-swap ��ʵ�������ڴ棬�����С�������ڴ�� 1~2 ����
+/ ：建议大小在 5GB 以上。 
+swap ：即交换分区，建议大小是物理内存的 1~2 倍。
 
 
 
-�� 3 ���߼�����������
-/boot ����������� Linux ϵͳ�����йصĳ��򣬱�����������װ�س���ȣ������СΪ 100MB �� ǿ����Ϊ������
-/usr ��������� Linux ϵͳ�е�Ӧ�ó�����������ݽ϶࣬������� 3GB ���ϡ� 
-/var ��������� Linux ϵͳ�о����仯�������Լ���־�ļ���������� 1GB ���ϡ� 
-/home �������ͨ�û������ݣ�����ͨ�û�������Ŀ¼�������СΪʣ�µĿռ䡣 
-/ �� Linux ϵͳ�ĸ�Ŀ¼�����е�Ŀ¼���������Ŀ¼���棬�����СΪ 5GB ���ϡ� ǿ����Ϊ������
-/tmp ������ʱ���ڶ����ķ������ɱ������ļ�ϵͳ������ʱӰ�쵽ϵͳ���ȶ��ԡ������СΪ 500MB ���ϡ� 
-swap ��ʵ�������ڴ棬�����С�������ڴ�� 1~2 ����ǿ����Ϊ������
+（ 2 ）进阶分区方案：
+/boot ：用来存放与 Linux 系统启动有关的程序，比如启动引导装载程序等，建议大小为 100MB 。 
+/ ： Linux 系统的根目录，所有的目录都挂在这个目录下面，建议大小为 5GB 以上。 
+/home ：存放普通用户的数据，是普通用户的宿主目录，建议大小为剩下的空间。 
+swap ：实现虚拟内存，建议大小是物理内存的 1~2 倍。
+
+
+
+（ 3 ）高级分区方案：
+/boot ：用来存放与 Linux 系统启动有关的程序，比如启动引导装载程序等，建议大小为 100MB 。 强制设为主分区
+/usr ：用来存放 Linux 系统中的应用程序，其相关数据较多，建议大于 3GB 以上。 
+/var ：用来存放 Linux 系统中经常变化的数据以及日志文件，建议大于 1GB 以上。 
+/home ：存放普通用户的数据，是普通用户的宿主目录，建议大小为剩下的空间。 
+/ ： Linux 系统的根目录，所有的目录都挂在这个目录下面，建议大小为 5GB 以上。 强制设为主分区
+/tmp ：将临时盘在独立的分区，可避免在文件系统被塞满时影响到系统的稳定性。建议大小为 500MB 以上。 
+swap ：实现虚拟内存，建议大小是物理内存的 1~2 倍。强制设为主分区
 
 //********************************************
 cat /etc/resolv.conf
@@ -45,9 +45,9 @@ GATEWAY=192.168.2.1
 DNS1=192.168.2.1
 
 //*********************************************
-�رշ���ǽ�Լ�selinux���������samba������Ȩ��
+关闭防火墙以及selinux，解决访问samba共享无权限
 chkconfig  iptables off 
-setenforce 0  ���޸�/etc/selinux/config �ļ�����SELINUX=enforcing��ΪSELINUX=disabled�������������ɣ�
+setenforce 0  （修改/etc/selinux/config 文件，将SELINUX=enforcing改为SELINUX=disabled，重启机器即可）
 
 
 [global]
@@ -78,11 +78,11 @@ setenforce 0  ���޸�/etc/selinux/config �ļ�����SELINUX=enforcing��ΪSELINUX=dis
          read only = no
 
 //*******************************************
-cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime �޸�ʱ��
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 修改时区
 
-wget -r -p -np -k URL    ����һ��վ��
+wget -r -p -np -k URL    下载一个站点
 
-export LD_LIBRARY_PATH=/data/opt/glibc-2.14/lib:$LD_LIBRARY_PATH ��ʱ�޸Ļ�������
+export LD_LIBRARY_PATH=/data/opt/glibc-2.14/lib:$LD_LIBRARY_PATH 临时修改环境变量
 
 gcc g++
 yum -y update gcc
@@ -90,4 +90,121 @@ yum -y install gcc+ gcc-c++
 
 yum install libtermcap-devel ncurses-devel libevent-devel readline-devel
 
-vpn:�ѻ��������� 106.185.48.226 user:vpn pass:123456 
+vpn:已换东京机房 106.185.48.226 user:vpn pass:123456 
+
+-----------
+在VM虚拟机中安装CentOS 7 时 有时候顾虑到电脑硬件性能，我们需要最小化安装，而最小化安装后与centos6的版本是有一些差异的，接下来我们就对刚安装好的最小化centos7做一些操作，来世我们使用的更得心应手。 
+1. 最小化安装CentOS7，首先需要配置网络，和6系列一样
+
+vi /etc/sysconfig/network-scripts/ifcfg-eno16777736
+
+这里的eno16777736是你的网卡名称，（我使用的是NAT模式，桥接模式自行修改IP地址）修改文件中
+
+ONBOOT = no 为 
+ONBOOT = yes
+
+启用你的网卡。 
+桥接模式修改IP地址百度一大堆，这里不再赘述。
+
+最小化安装CentOS7后，在配置网络后，想查看我的IP，发现 ifconfig 命令是不好使得。在最小化的CentOS7中，查看网卡信息的命令应该是
+ip addr 
+ip addr
+查看网络统计信息是 
+ip link，
+
+ip link
+
+为了方便起见 我们还是启用ifconfig 命令。 
+首先我们看看，是哪个组件包含了ifconfig命令，用
+
+yum provides ifconfig 
+或 
+yum whatprovides ifconfig 来查看
+
+这里写图片描述 
+我们可以看到 ifconfig 命令是依赖于 net-tools 软件的 ，所以我们
+
+yum install -y net-tools
+
+安装该软件， 好了 现在 ifconfig 是不是能正常使用了！
+
+3.下一步我们就要关闭CentOS7自带的防火墙 firewall 启用 IPtable 
+停止 Firewall
+
+systemctl stop firewalld
+
+关闭firewall自动启动
+
+systemctl disable firewalld.service 
+安装IPtables防火墙 
+yum install -y iptables-services
+
+修改iptables配置文件，开放以下端口 (默认开启了22端口，以便putty等软件的连接，实例开启80端口和3306端口，以便后期lamp环境使用，注：80 为Apache默认端口，3306为MySQL的默认端口）
+
+vi /etc/sysconfig/iptables 
+#添加下面三句话到默认的22端口这条规则的下面 
+-A INPUT -m state –state NEW -m tcp -p tcp –dport 80 -j ACCEPT 
+-A INPUT -m state –state NEW -m tcp -p tcp –dport 3306 -j ACCEPT
+
+修改后的iptables配置文件：
+
+# sample configuration for iptables service 
+# you can edit this manually or use system-config-firewall 
+# please do not ask us to add additional ports/services to this default configuration 
+*filter 
+:INPUT ACCEPT [0:0] 
+:FORWARD ACCEPT [0:0] 
+:OUTPUT ACCEPT [0:0] 
+-A INPUT -m state –state RELATED,ESTABLISHED -j ACCEPT 
+-A INPUT -p icmp -j ACCEPT 
+-A INPUT -i lo -j ACCEPT 
+-A INPUT -p tcp -m state –state NEW -m tcp –dport 22 -j ACCEPT 
+-A INPUT -m state –state NEW -m tcp -p tcp –dport 80 -j ACCEPT 
+-A INPUT -m state –state NEW -m tcp -p tcp –dport 3306 -j ACCEPT 
+-A INPUT -j REJECT –reject-with icmp-host-prohibited 
+-A FORWARD -j REJECT –reject-with icmp-host-prohibited 
+COMMIT
+
+重启iptables
+
+systemctl restart iptables.service 
+添加iptables开机自启项 
+systemctl enable iptables.service
+
+4.关闭SELINUX 
+编辑SELINUX配置文件
+
+vi /etc/selinux/config 
+#注释掉下面两行 
+#SELINUX=enforcing 
+#SELINUXTYPE=targeted 
+#增加一行 
+SELINUX=disabled
+
+保存，关闭
+
+setenforce 0 
+使设置启用，在这里最好重启一下系统，也可以稍后重启
+
+5.CentOS7最小化安装后没有wget软件，但是以后我们会经常用到这个组件，所以我们安装一下
+
+yum install -y wget
+
+6.CentOS自带的国外源有时候会很慢，我们替换成国内的阿里源，也有很多比如163源都很好，国内很多人用，但这里我们就用阿里源做个示例，想用其他源的同学可以去百度一下。
+
+#先进入源的目录 
+cd /etc/yum.repo.d 
+#备份一下官方源 
+mv CentOS-Base.repo CentOS-Base.repo.bak 
+#将阿里源文件下载下来 
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo 
+#重建源数据缓存 
+yum makecache 
+ok,换源完成
+
+7.CentOS自带vi编辑器，功能没有vim强大，我么再安装一个vim编辑器
+
+yum install -y vim-enhanced
+
+大功告成，现在我们的最小化CentOS7已经可以得心应手的使用了！
+-----------------------
