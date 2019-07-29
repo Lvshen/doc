@@ -12,6 +12,25 @@ CentOS中默认安装有MariaDB，这个是MySQL的分支，但为了需要，�
 [root@localhost ~]# yum -y install mysql-community-server
   这步可能会花些时间，安装完成后就会覆盖掉之前的mariadb。
 
+迁移改变数据库目录
+cp -a /var/lib/mysql /data/
+
+修改datadir和socket的值，同时添加下方红框[client] ...的代码，指定sock文件目录
+
+# 编辑my.conf配置文件
+vi /etc/my.conf 
+# 按i进入编辑模式，并修改/添加红框处代码
+# 按`Esc`后输入`:wq`保存并退出编辑。
+
+[client]
+default-character-set=utf8
+socket=/data/mysql/mysql.sock
+ 
+[mysql]
+default-character-set=utf8
+socket=/data/mysql/mysql.sock
+
+
 2 MySQL数据库设置
   首先启动MySQL
 
