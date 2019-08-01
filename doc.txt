@@ -356,6 +356,9 @@ rabbitmqctl add_user 用户名 密码
  
 # 赋予用户管理员角色
 rabbitmqctl set_user_tags 用户 administrator
+
+赋予‘/’目录的访问权限
+rabbitmqctl  set_permissions -p / 用户 '.*' '.*' '.*'
  
  修改rabbitmq打开文件数量
 
