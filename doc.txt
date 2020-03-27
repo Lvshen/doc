@@ -324,7 +324,7 @@ rpm --import https://dl.bintray.com/rabbitmq/Keys/rabbitmq-release-signing-key.a
 rpm --import https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
  
 # 安装
-yum install rabbitmq-server-3.7.7-1.el7.noarch.rpm
+yum install rabbitmq-server-3.7.16-1.el7.noarch.rpm
 
 # 设置开启启动
 chkconfig rabbitmq-server on
@@ -333,11 +333,11 @@ chkconfig rabbitmq-server on
 systemctl start rabbitmq-server
  
 #停止服务
-systemctl stop rabbitmq-server
+#systemctl stop rabbitmq-server
 
-发现刚开始的时候并没有任何配置文件。只好照着官方的介绍，到 /usr/share/doc/rabbitmq-server-3.7.7/ 目录下复制一份模板到 /etc/rabbitmq 目录下进行修改
+发现刚开始的时候并没有任何配置文件。只好照着官方的介绍，到 /usr/share/doc/rabbitmq-server-3.7.16/ 目录下复制一份模板到 /etc/rabbitmq 目录下进行修改
 
-cd /usr/share/doc/rabbitmq-server-3.7.7/
+cd /usr/share/doc/rabbitmq-server-3.7.16/
  
 cp rabbitmq.config.example /etc/rabbitmq/rabbitmq.config
 
@@ -396,3 +396,31 @@ fs.file-max = 65535
 reboot
  
 #再次访问管理后台，发现打开数已改为300000
+
+***********************************************************
+
+vhost本质上是一个mini版的RabbitMQ服务器，拥有自己的队列、绑定、交换器和权限控制；
+
+vhost通过在各个实例间提供逻辑上分离，允许你为不同应用程序安全保密地运行数据；
+
+vhost是AMQP概念的基础，必须在连接时进行指定，RabbitMQ包含了默认vhost：“/”；
+
+当在RabbitMQ中创建一个用户时，用户通常会被指派给至少一个vhost，并且只能访问被指派vhost内的队列、交换器和绑定，vhost之间是绝对隔离的。
+
+vhost操作：
+
+rabbitmqctl add_vhost [vhost_name] #创建vhost
+ 
+rabbitmqctl delete_vhost [vhost_name] #删除vhost
+ 
+rabbitmqctl list_vhosts #查看
+ 
+#配置最大连接限制，0：表示不可用，-1：无限制
+ 
+rabbitmqctl set_vhost_limits -p vhost_name '{"max-connections": 256}'
+ 
+#配置队列最大数，-1：无限制
+ 
+rabbitmqctl set_vhost_limits -p vhost_name '{"max-queues": 1024}'
+ 
+*******************************************************************************
