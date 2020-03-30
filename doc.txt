@@ -424,3 +424,6 @@ rabbitmqctl set_vhost_limits -p vhost_name '{"max-connections": 256}'
 rabbitmqctl set_vhost_limits -p vhost_name '{"max-queues": 1024}'
  
 *******************************************************************************
+
+ln -s /usr/local/nodejs/bin/npm /usr/local/bin/
+ln -s /usr/local/nodejs/bin/node /usr/local/bin/
